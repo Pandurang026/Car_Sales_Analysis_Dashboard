@@ -1,0 +1,46 @@
+VIDEO LINK: https://www.youtube.com/watch?v=XnPo5Ft7RzQ&t=20s
+
+
+NOTE:
+1.in this we have to calculate YEAR TO DATE, YEAR TO MONTH and YEAR ON YERAR
+	so these are time inteligent functions so for this we have to use DATE TABLE or CALENDER TABLE
+
+
+
+NOTE:CREATE NEW TABLE (CALENDER TABLE)
+
+
+Month = FORMAT('Calender Table'[Date], "MMMM")
+Year = YEAR('Calender Table'[Date])
+Calendar Table = CALENDAR(MIN(car_data[Date]), MAX(car_data[Date]))
+Week = WEEKNUM('Calendar Table'[Date])
+
+YTD Total Sale = TOTALYTD(SUM(car_data[Price ($)]), 'Calendar Table'[Date]) 
+PYTD Total Sale = CALCULATE(SUM(car_data[Price ($)]), SAMEPERIODLASTYEAR('Calendar Table'[Date]))
+YoY Sales Growth = [Sales Difference] / [PYTD Total Sale]
+MTD Total Sales = TOTALMTD(SUM(car_data[Price ($)]), 'Calendar Table'[Date])
+MTD KPI = CONCATENATE("MTD Total Sales :", [MTD Total Sales])
+MTD KPI = CONCATENATE("MTD Total Sales :", FORMAT([MTD Total Sales] / 1000000, "$0.00M")
+Avg Price = SUM(car_data[Price ($)]) / COUNT(car_data[Car_id])
+YTD Avg Price = TOTALYTD([Avg Price], 'Calendar Table'[Date])
+PYTD Avg Price = CALCULATE([Avg Price], SAMEPERIODLASTYEAR('Calendar Table'[Date])
+Avg Price Diff = [YTD Avg Price] - [PYTD Avg Price]
+Avg Price Color = IF([Avg Price Diff] > 0, "Green", "Red") 
+YoY Avg Price Growth = [Avg Price Diff] / [PYTD Avg Price]
+MTD Avg Price = TOTALMTD([Avg Price], 'Calendar Table'[Date])
+MTD AVg Price KPI = CONCATENATE("MTD Avg Price : ", FORMAT([MTD Avg Price] / 1000, "$0.00K"))
+YTD Car Sold = TOTALYTD(COUNT(car_data[Car_id]), 'Calendar Table'[Date])
+PYTD Car Sold = CALCULATE(COUNT(car_data[Car_id]), SAMEPERIODLASTYEAR('Calendar Table'[Date]))
+YTD Car Sold Diff = [YTD Car Sold] - [PYTD Car Sold]
+YoY Car SOld Growth = [YTD Car Sold Diff] / [PYTD Car Sold]
+Car Sold Colour = IF(car_data[YTD Car Sold Diff]>0, "Green", "Red")
+YoY Car Sold Growth = [YTD Car Sold Diff] / [PYTD Car Sold]
+MTD Cars Sold = TOTALMTD(COUNT(car_data[Car_id]), 'Calendar Table'[Date])
+MTD Cars Sold KPI = CONCATENATE("MTD Cars Sold : ", FORMAT([MTD Cars Sold] / 1000, "$0.00K"))
+
+
+
+VISUALIZATION:
+1.Sum of price by week
+	Total Sales = SUM(car_data[Price ($)])
+	Top POint = IF(MAXX(ALLSELECTED('Calendar Table'[Week]), [Total Sales]) = [Total Sales], MAXX(ALLSELECTED('Calendar Table'[Week]), [Total Sales]), BLANK())
